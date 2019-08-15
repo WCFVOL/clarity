@@ -3,7 +3,6 @@ package skadistats.clarity.decoder.s2.field;
 import skadistats.clarity.ClarityException;
 import skadistats.clarity.decoder.Util;
 import skadistats.clarity.decoder.s2.S2UnpackerFactory;
-import skadistats.clarity.decoder.unpacker.Unpacker;
 import skadistats.clarity.model.FieldPath;
 import skadistats.clarity.model.s2.S2FieldPath;
 import skadistats.clarity.model.s2.S2ModifiableFieldPath;
@@ -14,12 +13,17 @@ import java.util.List;
 public class FixedArrayField extends Field {
 
     private final int length;
-    private final Unpacker elementUnpacker;
+    private final UnpackerCursorDelegate unpackerCursorDelegate;
 
     public FixedArrayField(FieldProperties properties, int length) {
         super(properties);
         this.length = length;
-        elementUnpacker = S2UnpackerFactory.createUnpacker(properties, properties.getType().getBaseType());
+        unpackerCursorDelegate = UnpackerCursorDelegate.create(
+                null,
+                UnpackerCursorDelegate.create(
+                        S2UnpackerFactory.createUnpacker(properties, properties.getType().getBaseType())
+                )
+        );
     }
 
     @Override
@@ -32,13 +36,8 @@ public class FixedArrayField extends Field {
     }
 
     @Override
-    public Unpacker getUnpackerForFieldPath(S2FieldPath fp, int pos) {
-        assert fp.last() == pos || fp.last() == pos + 1;
-        if (fp.last() == pos) {
-            return null;
-        } else {
-            return elementUnpacker;
-        }
+    public UnpackerCursorDelegate getUnpackerCursorDelegate() {
+        return unpackerCursorDelegate;
     }
 
     @Override

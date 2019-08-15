@@ -1,7 +1,6 @@
 package skadistats.clarity.decoder.s2.field;
 
 import skadistats.clarity.decoder.s2.S2UnpackerFactory;
-import skadistats.clarity.decoder.unpacker.Unpacker;
 import skadistats.clarity.model.FieldPath;
 import skadistats.clarity.model.s2.S2FieldPath;
 import skadistats.clarity.model.s2.S2ModifiableFieldPath;
@@ -11,11 +10,14 @@ import java.util.List;
 
 public class FixedSubTableField extends Field {
 
-    private final Unpacker baseUnpacker;
+    private final UnpackerCursorDelegate unpackerCursorDelegate;
 
     public FixedSubTableField(FieldProperties properties) {
         super(properties);
-        baseUnpacker = S2UnpackerFactory.createUnpacker(properties, "bool");
+        unpackerCursorDelegate = UnpackerCursorDelegate.create(
+                S2UnpackerFactory.createUnpacker(properties, "bool"),
+                i -> properties.getSerializer().getFields()[i].getUnpackerCursorDelegate()
+        );
     }
 
     @Override
@@ -28,13 +30,8 @@ public class FixedSubTableField extends Field {
     }
 
     @Override
-    public Unpacker getUnpackerForFieldPath(S2FieldPath fp, int pos) {
-        assert fp.last() >= pos;
-        if (fp.last() == pos) {
-            return baseUnpacker;
-        } else {
-            return properties.getSerializer().getUnpackerForFieldPath(fp, pos + 1);
-        }
+    public UnpackerCursorDelegate getUnpackerCursorDelegate() {
+        return unpackerCursorDelegate;
     }
 
     @Override

@@ -1,7 +1,6 @@
 package skadistats.clarity.decoder.s2.field;
 
 import skadistats.clarity.decoder.s2.S2UnpackerFactory;
-import skadistats.clarity.decoder.unpacker.Unpacker;
 import skadistats.clarity.model.FieldPath;
 import skadistats.clarity.model.s2.S2FieldPath;
 import skadistats.clarity.model.s2.S2ModifiableFieldPath;
@@ -11,11 +10,13 @@ import java.util.List;
 
 public class SimpleField extends Field {
 
-    private final Unpacker unpacker;
+    private final UnpackerCursorDelegate unpackerCursorDelegate;
 
     public SimpleField(FieldProperties properties) {
         super(properties);
-        unpacker = S2UnpackerFactory.createUnpacker(properties, properties.getType().getBaseType());
+        unpackerCursorDelegate = UnpackerCursorDelegate.create(
+                S2UnpackerFactory.createUnpacker(properties, properties.getType().getBaseType())
+        );
     }
 
     @Override
@@ -25,9 +26,8 @@ public class SimpleField extends Field {
     }
 
     @Override
-    public Unpacker getUnpackerForFieldPath(S2FieldPath fp, int pos) {
-        assert fp.last() == pos;
-        return unpacker;
+    public UnpackerCursorDelegate getUnpackerCursorDelegate() {
+        return unpackerCursorDelegate;
     }
 
     @Override

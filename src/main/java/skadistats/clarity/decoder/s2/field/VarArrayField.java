@@ -3,7 +3,6 @@ package skadistats.clarity.decoder.s2.field;
 import skadistats.clarity.ClarityException;
 import skadistats.clarity.decoder.Util;
 import skadistats.clarity.decoder.s2.S2UnpackerFactory;
-import skadistats.clarity.decoder.unpacker.Unpacker;
 import skadistats.clarity.model.FieldPath;
 import skadistats.clarity.model.s2.S2FieldPath;
 import skadistats.clarity.model.s2.S2ModifiableFieldPath;
@@ -13,13 +12,16 @@ import java.util.List;
 
 public class VarArrayField extends Field {
 
-    private final Unpacker baseUnpacker;
-    private final Unpacker elementUnpacker;
+    private final UnpackerCursorDelegate unpackerCursorDelegate;
 
     public VarArrayField(FieldProperties properties) {
         super(properties);
-        baseUnpacker = S2UnpackerFactory.createUnpacker(properties, "uint32");
-        elementUnpacker = S2UnpackerFactory.createUnpacker(properties, properties.getType().getGenericType().getBaseType());
+        unpackerCursorDelegate = UnpackerCursorDelegate.create(
+                S2UnpackerFactory.createUnpacker(properties, "uint32"),
+                UnpackerCursorDelegate.create(
+                        S2UnpackerFactory.createUnpacker(properties, properties.getType().getGenericType().getBaseType())
+                )
+        );
     }
 
     @Override
@@ -32,13 +34,8 @@ public class VarArrayField extends Field {
     }
 
     @Override
-    public Unpacker getUnpackerForFieldPath(S2FieldPath fp, int pos) {
-        assert fp.last() == pos || fp.last() == pos + 1;
-        if (pos == fp.last()) {
-            return baseUnpacker;
-        } else {
-            return elementUnpacker;
-        }
+    public UnpackerCursorDelegate getUnpackerCursorDelegate() {
+        return unpackerCursorDelegate;
     }
 
     @Override

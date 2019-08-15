@@ -2,7 +2,7 @@ package skadistats.clarity.decoder.s2;
 
 import skadistats.clarity.decoder.s2.field.Field;
 import skadistats.clarity.decoder.s2.field.FieldType;
-import skadistats.clarity.decoder.unpacker.Unpacker;
+import skadistats.clarity.decoder.s2.field.UnpackerCursorDelegate;
 import skadistats.clarity.model.FieldPath;
 import skadistats.clarity.model.s2.S2FieldPath;
 import skadistats.clarity.model.s2.S2ModifiableFieldPath;
@@ -17,6 +17,10 @@ public class Serializer {
     private final SerializerId id;
     private final Field[] fields;
     private final Set<String> sendNodePrefixes;
+    private UnpackerCursorDelegate unpackerCursorDelegate = UnpackerCursorDelegate.create(
+            null,
+            this::getFieldUnpackerCursorDelegate
+    );
 
     public Serializer(SerializerId id, Field[] fields) {
         this.id = id;
@@ -49,8 +53,12 @@ public class Serializer {
         fields[fp.get(pos)].accumulateName(fp, pos, parts);
     }
 
-    public Unpacker getUnpackerForFieldPath(S2FieldPath fp, int pos) {
-        return fields[fp.get(pos)].getUnpackerForFieldPath(fp, pos);
+    public UnpackerCursorDelegate getUnpackerCursorDelegate() {
+        return unpackerCursorDelegate;
+    }
+
+    public UnpackerCursorDelegate getFieldUnpackerCursorDelegate(int i) {
+        return fields[i].getUnpackerCursorDelegate();
     }
 
     public Field getFieldForFieldPath(S2FieldPath fp, int pos) {

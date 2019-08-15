@@ -235,7 +235,11 @@ public enum FieldOpType {
     PushNAndNonTopographical(310) {
         @Override
         public void execute(FieldOpCursor fp, BitStream bs) {
-            fp.incAll(i -> bs.readBitFlag(), () -> bs.readVarSInt() + 1);
+            for (int i = 0; i <= fp.last(); i++) {
+                if (bs.readBitFlag()) {
+                    fp.inc(i, bs.readVarSInt() + 1);
+                }
+            }
             int c = bs.readUBitVar();
             for (int i = 0; i < c; i++) {
                 fp.down();
@@ -303,26 +307,37 @@ public enum FieldOpType {
         @Override
         public void execute(FieldOpCursor fp, BitStream bs) {
             fp.up(bs.readUBitVarFieldPath());
-            fp.incAll(i -> bs.readBitFlag(), bs::readVarSInt);
+            for (int i = 0; i <= fp.last(); i++) {
+                if (bs.readBitFlag()) {
+                    fp.inc(i, bs.readVarSInt());
+                }
+            }
         }
     },
     NonTopoComplex(76) {
         @Override
         public void execute(FieldOpCursor fp, BitStream bs) {
-            fp.incAll(i -> bs.readBitFlag(), bs::readVarSInt);
+            for (int i = 0; i <= fp.last(); i++) {
+                if (bs.readBitFlag()) {
+                    fp.inc(i, bs.readVarSInt());
+                }
+            }
         }
     },
     NonTopoPenultimatePluseOne(271) {
         @Override
         public void execute(FieldOpCursor fp, BitStream bs) {
-            int n = fp.last() - 1;
-            fp.incAll(i -> i == n, () -> 1);
+            fp.inc(fp.last() - 1, 1);
         }
     },
     NonTopoComplexPack4Bits(99) {
         @Override
         public void execute(FieldOpCursor fp, BitStream bs) {
-            fp.incAll(i -> bs.readBitFlag(), () -> bs.readUBitInt(4) - 7);
+            for (int i = 0; i <= fp.last(); i++) {
+                if (bs.readBitFlag()) {
+                    fp.inc(i, bs.readUBitInt(4) - 7);
+                }
+            }
         }
     },
     FieldPathEncodeFinish(25474) {

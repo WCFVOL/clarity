@@ -16,10 +16,6 @@ public interface S2ModifiableFieldPath<F extends S2FieldPath> extends S2FieldPat
         set(i, get(i) + n);
     }
 
-    default void inc(int n) {
-        inc(last(), n);
-    }
-
     default void cur(int v) {
         set(last(), v);
     }

@@ -3,7 +3,6 @@ package skadistats.clarity.decoder.s2.field;
 import skadistats.clarity.ClarityException;
 import skadistats.clarity.decoder.Util;
 import skadistats.clarity.decoder.s2.S2UnpackerFactory;
-import skadistats.clarity.decoder.unpacker.Unpacker;
 import skadistats.clarity.model.FieldPath;
 import skadistats.clarity.model.s2.S2FieldPath;
 import skadistats.clarity.model.s2.S2ModifiableFieldPath;
@@ -13,11 +12,17 @@ import java.util.List;
 
 public class VarSubTableField extends Field {
 
-    private final Unpacker baseUnpacker;
+    private final UnpackerCursorDelegate unpackerCursorDelegate;
 
     public VarSubTableField(FieldProperties properties) {
         super(properties);
-        baseUnpacker = S2UnpackerFactory.createUnpacker(properties, "uint32");
+        unpackerCursorDelegate = UnpackerCursorDelegate.create(
+                S2UnpackerFactory.createUnpacker(properties, "uint32"),
+                UnpackerCursorDelegate.create(
+                        null,
+                        properties.getSerializer()::getFieldUnpackerCursorDelegate
+                )
+        );
     }
 
     @Override
@@ -33,13 +38,8 @@ public class VarSubTableField extends Field {
     }
 
     @Override
-    public Unpacker getUnpackerForFieldPath(S2FieldPath fp, int pos) {
-        assert fp.last() == pos || fp.last() == pos + 2;
-        if (fp.last() == pos) {
-            return baseUnpacker;
-        } else {
-            return properties.getSerializer().getUnpackerForFieldPath(fp, pos + 2);
-        }
+    public UnpackerCursorDelegate getUnpackerCursorDelegate() {
+        return unpackerCursorDelegate;
     }
 
     @Override

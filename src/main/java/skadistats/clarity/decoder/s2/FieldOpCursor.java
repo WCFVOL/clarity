@@ -1,8 +1,5 @@
 package skadistats.clarity.decoder.s2;
 
-import java.util.function.IntPredicate;
-import java.util.function.IntSupplier;
-
 public interface FieldOpCursor<Y> {
 
     void down();
@@ -11,10 +8,17 @@ public interface FieldOpCursor<Y> {
 
     int last();
 
-    void inc(int n);
+    void inc(int i, int n);
 
-    void incAll(IntPredicate pred, IntSupplier work);
+    default void inc(int n) {
+        inc(last(), n);
+    }
 
     Y yield();
+
+    interface Delegate<Y> {
+        Delegate<Y> down(int i);
+        Y yield();
+    }
 
 }

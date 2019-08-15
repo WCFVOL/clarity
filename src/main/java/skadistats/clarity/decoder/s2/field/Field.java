@@ -1,6 +1,5 @@
 package skadistats.clarity.decoder.s2.field;
 
-import skadistats.clarity.decoder.unpacker.Unpacker;
 import skadistats.clarity.model.FieldPath;
 import skadistats.clarity.model.s2.S2FieldPath;
 import skadistats.clarity.model.s2.S2ModifiableFieldPath;
@@ -17,7 +16,7 @@ public abstract class Field {
     }
 
     public abstract void accumulateName(S2FieldPath fp, int pos, List<String> parts);
-    public abstract Unpacker getUnpackerForFieldPath(S2FieldPath fp, int pos);
+    public abstract UnpackerCursorDelegate getUnpackerCursorDelegate();
     public abstract Field getFieldForFieldPath(S2FieldPath fp, int pos);
     public abstract FieldType getTypeForFieldPath(S2FieldPath fp, int pos);
     public abstract Object getValueForFieldPath(S2FieldPath fp, int pos, ArrayEntityState state);

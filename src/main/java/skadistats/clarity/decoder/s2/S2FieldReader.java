@@ -42,6 +42,8 @@ public class S2FieldReader extends FieldReader<S2DTClass> {
         .addColumn("read")
         .build();
 
+    private final Unpacker[] unpackers = new Unpacker[fieldPaths.length];
+
     @Override
     public int readFields(BitStream bs, S2DTClass dtClass, EntityState state, Consumer<FieldPath> fieldPathConsumer, boolean debug) {
         try {
@@ -52,26 +54,33 @@ public class S2FieldReader extends FieldReader<S2DTClass> {
             }
 
             int n = 0;
-            S2ModifiableFieldPath mfp = S2ModifiableFieldPath.newInstance();
+            SimpleFieldOpCursor<Unpacker> cursor = new SimpleFieldOpCursor<>(
+                    dtClass.getSerializer().getUnpackerCursorDelegate()
+            );
+
             while (true) {
                 int offsBefore = bs.pos();
                 FieldOpType op = bs.readFieldOp();
-                op.execute(mfp, bs);
+                op.execute(cursor, bs);
+
                 if (debug) {
                     opDebugTable.setData(n, 0, op);
-                    opDebugTable.setData(n, 1, mfp.yield());
+                    opDebugTable.setData(n, 1, cursor.getFieldPath());
                     opDebugTable.setData(n, 2, bs.pos() - offsBefore);
                     opDebugTable.setData(n, 3, bs.toString(offsBefore, bs.pos()));
                 }
                 if (op == FieldOpType.FieldPathEncodeFinish) {
                     break;
                 }
-                fieldPaths[n++] = mfp.yield();
+
+                fieldPaths[n] = cursor.getFieldPath();
+                unpackers[n] = cursor.yield();
+                n++;
             }
 
             for (int r = 0; r < n; r++) {
                 S2FieldPath fp = fieldPaths[r].s2();
-                Unpacker unpacker = dtClass.getUnpackerForFieldPath(fp);
+                Unpacker unpacker = unpackers[r];
                 if (unpacker == null) {
                     FieldProperties f = dtClass.getFieldForFieldPath(fp).getProperties();
                     throw new ClarityException("no unpacker for field %s with type %s!", f.getName(), f.getType());
