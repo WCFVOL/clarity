@@ -80,7 +80,7 @@ public class Serializer {
             if (property.startsWith(fieldName)) {
                 fp.cur(i);
                 if (property.length() == fieldName.length()) {
-                    return fp.unmodifiable();
+                    return fp.yield();
                 } else {
                     if (property.charAt(fieldName.length()) != '.') {
                         continue;

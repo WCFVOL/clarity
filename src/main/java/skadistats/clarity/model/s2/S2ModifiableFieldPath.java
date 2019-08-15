@@ -1,6 +1,8 @@
 package skadistats.clarity.model.s2;
 
-public interface S2ModifiableFieldPath<F extends S2FieldPath> extends S2FieldPath<F> {
+import skadistats.clarity.decoder.s2.FieldOpCursor;
+
+public interface S2ModifiableFieldPath<F extends S2FieldPath> extends S2FieldPath<F>, FieldOpCursor<S2FieldPath> {
 
     static S2ModifiableFieldPath newInstance() {
         return new S2LongModifiableFieldPath();
@@ -8,15 +10,7 @@ public interface S2ModifiableFieldPath<F extends S2FieldPath> extends S2FieldPat
 
     void set(int i, int v);
 
-    int get(int i);
-
-    void down();
-
-    void up(int n);
-
-    int last();
-
-    S2FieldPath unmodifiable();
+    S2FieldPath yield();
 
     default void inc(int i, int n) {
         set(i, get(i) + n);

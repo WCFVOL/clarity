@@ -59,14 +59,14 @@ public class S2FieldReader extends FieldReader<S2DTClass> {
                 op.execute(mfp, bs);
                 if (debug) {
                     opDebugTable.setData(n, 0, op);
-                    opDebugTable.setData(n, 1, mfp.unmodifiable());
+                    opDebugTable.setData(n, 1, mfp.yield());
                     opDebugTable.setData(n, 2, bs.pos() - offsBefore);
                     opDebugTable.setData(n, 3, bs.toString(offsBefore, bs.pos()));
                 }
                 if (op == FieldOpType.FieldPathEncodeFinish) {
                     break;
                 }
-                fieldPaths[n++] = mfp.unmodifiable();
+                fieldPaths[n++] = mfp.yield();
             }
 
             for (int r = 0; r < n; r++) {

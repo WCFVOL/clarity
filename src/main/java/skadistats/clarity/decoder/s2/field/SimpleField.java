@@ -61,6 +61,6 @@ public class SimpleField extends Field {
 
     @Override
     public void collectFieldPaths(S2ModifiableFieldPath fp, List<FieldPath> entries, ArrayEntityState state) {
-        entries.add(fp.unmodifiable());
+        entries.add(fp.yield());
     }
 }

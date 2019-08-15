@@ -1,5 +1,8 @@
 package skadistats.clarity.model.s2;
 
+import java.util.function.IntPredicate;
+import java.util.function.IntSupplier;
+
 public class S2LongModifiableFieldPath implements S2ModifiableFieldPath<S2LongModifiableFieldPath> {
 
     private long id;
@@ -30,7 +33,17 @@ public class S2LongModifiableFieldPath implements S2ModifiableFieldPath<S2LongMo
     }
 
     @Override
-    public S2FieldPath unmodifiable() {
+    public void incAll(IntPredicate pred, IntSupplier work) {
+        int n = last();
+        for (int i = 0; i <= n; i++) {
+            if (pred.test(i)) {
+                inc(i, work.getAsInt());
+            }
+        }
+    }
+
+    @Override
+    public S2FieldPath yield() {
         return new S2LongFieldPath(id);
     }
 

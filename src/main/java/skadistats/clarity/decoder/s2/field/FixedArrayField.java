@@ -91,7 +91,7 @@ public class FixedArrayField extends Field {
             throw new ClarityException("unresolvable fieldpath");
         }
         fp.cur(Integer.parseInt(property));
-        return fp.unmodifiable();
+        return fp.yield();
     }
 
     @Override
@@ -101,7 +101,7 @@ public class FixedArrayField extends Field {
         for (int i = 0; i < subState.length(); i++) {
             if (subState.has(i)) {
                 fp.cur(i);
-                entries.add(fp.unmodifiable());
+                entries.add(fp.yield());
             }
         }
         fp.up(1);
