@@ -9,7 +9,7 @@ public class SimpleFieldOpCursor<Y> implements FieldOpCursor<Y> {
     private final Delegate[] delegates = new Delegate[5];
     private int valid = 0;
 
-    public SimpleFieldOpCursor(Delegate<Y> delegate) {
+    public SimpleFieldOpCursor(Delegate<Y, ?> delegate) {
         delegates[fp.last()] = delegate;
     }
 

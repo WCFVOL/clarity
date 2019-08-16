@@ -13,6 +13,7 @@ import java.util.List;
 public class VarArrayField extends Field {
 
     private final UnpackerCursorDelegate unpackerCursorDelegate;
+    private final FieldSetterCursorDelegate fieldSetterCursorDelegate;
 
     public VarArrayField(FieldProperties properties) {
         super(properties);
@@ -22,6 +23,25 @@ public class VarArrayField extends Field {
                         S2UnpackerFactory.createUnpacker(properties, properties.getType().getGenericType().getBaseType())
                 )
         );
+        fieldSetterCursorDelegate = FieldSetterCursorDelegate.create(
+                accessor -> value -> accessor.sub().capacity((Integer) value, true),
+                i -> FieldSetterCursorDelegate.create(
+                        accessor -> {
+                            accessor.sub().capacity(i + 1, false);
+                            return value -> accessor.sub().set(i, value);
+                        }
+                )
+        );
+    }
+
+    @Override
+    public UnpackerCursorDelegate getUnpackerCursorDelegate() {
+        return unpackerCursorDelegate;
+    }
+
+    @Override
+    public FieldSetterCursorDelegate getFieldSetterCursorDelegate() {
+        return fieldSetterCursorDelegate;
     }
 
     @Override
@@ -31,11 +51,6 @@ public class VarArrayField extends Field {
         if (fp.last() > pos) {
             parts.add(Util.arrayIdxToString(fp.get(pos + 1)));
         }
-    }
-
-    @Override
-    public UnpackerCursorDelegate getUnpackerCursorDelegate() {
-        return unpackerCursorDelegate;
     }
 
     @Override

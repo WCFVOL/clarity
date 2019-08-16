@@ -11,23 +11,32 @@ import java.util.List;
 public class SimpleField extends Field {
 
     private final UnpackerCursorDelegate unpackerCursorDelegate;
+    private final FieldSetterCursorDelegate fieldSetterCursorDelegate;
 
     public SimpleField(FieldProperties properties) {
         super(properties);
         unpackerCursorDelegate = UnpackerCursorDelegate.create(
                 S2UnpackerFactory.createUnpacker(properties, properties.getType().getBaseType())
         );
+        fieldSetterCursorDelegate = FieldSetterCursorDelegate.create(
+                accessor -> accessor::set
+        );
+    }
+
+    @Override
+    public UnpackerCursorDelegate getUnpackerCursorDelegate() {
+        return unpackerCursorDelegate;
+    }
+
+    @Override
+    public FieldSetterCursorDelegate getFieldSetterCursorDelegate() {
+        return fieldSetterCursorDelegate;
     }
 
     @Override
     public void accumulateName(S2FieldPath fp, int pos, List<String> parts) {
         assert fp.last() == pos;
         addBasePropertyName(parts);
-    }
-
-    @Override
-    public UnpackerCursorDelegate getUnpackerCursorDelegate() {
-        return unpackerCursorDelegate;
     }
 
     @Override

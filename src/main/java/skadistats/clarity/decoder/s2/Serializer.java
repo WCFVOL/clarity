@@ -1,6 +1,7 @@
 package skadistats.clarity.decoder.s2;
 
 import skadistats.clarity.decoder.s2.field.Field;
+import skadistats.clarity.decoder.s2.field.FieldSetterCursorDelegate;
 import skadistats.clarity.decoder.s2.field.FieldType;
 import skadistats.clarity.decoder.s2.field.UnpackerCursorDelegate;
 import skadistats.clarity.model.FieldPath;
@@ -20,6 +21,10 @@ public class Serializer {
     private UnpackerCursorDelegate unpackerCursorDelegate = UnpackerCursorDelegate.create(
             null,
             this::getFieldUnpackerCursorDelegate
+    );
+    private final FieldSetterCursorDelegate fieldSetterCursorDelegate = FieldSetterCursorDelegate.create(
+            null,
+            this::getFieldSetterCursorDelegate
     );
 
     public Serializer(SerializerId id, Field[] fields) {
@@ -59,6 +64,14 @@ public class Serializer {
 
     public UnpackerCursorDelegate getFieldUnpackerCursorDelegate(int i) {
         return fields[i].getUnpackerCursorDelegate();
+    }
+
+    public FieldSetterCursorDelegate getFieldSetterCursorDelegate() {
+        return fieldSetterCursorDelegate;
+    }
+
+    public FieldSetterCursorDelegate getFieldSetterCursorDelegate(int i) {
+        return fields[i].getFieldSetterCursorDelegate();
     }
 
     public Field getFieldForFieldPath(S2FieldPath fp, int pos) {

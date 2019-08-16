@@ -8,7 +8,6 @@ import skadistats.clarity.decoder.s2.field.FieldType;
 import skadistats.clarity.decoder.unpacker.Unpacker;
 import skadistats.clarity.model.FieldPath;
 import skadistats.clarity.model.s2.S2FieldPath;
-import skadistats.clarity.model.s2.S2ModifiableFieldPath;
 import skadistats.clarity.model.state.EntityState;
 import skadistats.clarity.util.TextTable;
 

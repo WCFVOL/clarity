@@ -14,6 +14,7 @@ public class FixedArrayField extends Field {
 
     private final int length;
     private final UnpackerCursorDelegate unpackerCursorDelegate;
+    private final FieldSetterCursorDelegate fieldSetterCursorDelegate;
 
     public FixedArrayField(FieldProperties properties, int length) {
         super(properties);
@@ -24,6 +25,27 @@ public class FixedArrayField extends Field {
                         S2UnpackerFactory.createUnpacker(properties, properties.getType().getBaseType())
                 )
         );
+        fieldSetterCursorDelegate = FieldSetterCursorDelegate.create(
+                null,
+                i -> FieldSetterCursorDelegate.create(
+                    accessor -> {
+                        if (!accessor.has()) {
+                            accessor.sub().capacity(length);
+                        }
+                        return value -> accessor.sub().set(i, value);
+                    }
+                )
+        );
+    }
+
+    @Override
+    public UnpackerCursorDelegate getUnpackerCursorDelegate() {
+        return unpackerCursorDelegate;
+    }
+
+    @Override
+    public FieldSetterCursorDelegate getFieldSetterCursorDelegate() {
+        return fieldSetterCursorDelegate;
     }
 
     @Override
@@ -33,11 +55,6 @@ public class FixedArrayField extends Field {
         if (fp.last() > pos) {
             parts.add(Util.arrayIdxToString(fp.get(pos + 1)));
         }
-    }
-
-    @Override
-    public UnpackerCursorDelegate getUnpackerCursorDelegate() {
-        return unpackerCursorDelegate;
     }
 
     @Override

@@ -13,6 +13,7 @@ import java.util.List;
 public class VarSubTableField extends Field {
 
     private final UnpackerCursorDelegate unpackerCursorDelegate;
+    private final FieldSetterCursorDelegate fieldSetterCursorDelegate;
 
     public VarSubTableField(FieldProperties properties) {
         super(properties);
@@ -23,6 +24,23 @@ public class VarSubTableField extends Field {
                         properties.getSerializer()::getFieldUnpackerCursorDelegate
                 )
         );
+        fieldSetterCursorDelegate = FieldSetterCursorDelegate.create(
+                accessor -> value -> accessor.sub().capacity((Integer) value, true),
+                j -> FieldSetterCursorDelegate.create(
+                        null,
+                        i -> properties.getSerializer().getFieldSetterCursorDelegate(i)
+                )
+        );
+    }
+
+    @Override
+    public UnpackerCursorDelegate getUnpackerCursorDelegate() {
+        return unpackerCursorDelegate;
+    }
+
+    @Override
+    public FieldSetterCursorDelegate getFieldSetterCursorDelegate() {
+        return fieldSetterCursorDelegate;
     }
 
     @Override
@@ -35,11 +53,6 @@ public class VarSubTableField extends Field {
                 properties.getSerializer().accumulateName(fp, pos + 2, parts);
             }
         }
-    }
-
-    @Override
-    public UnpackerCursorDelegate getUnpackerCursorDelegate() {
-        return unpackerCursorDelegate;
     }
 
     @Override

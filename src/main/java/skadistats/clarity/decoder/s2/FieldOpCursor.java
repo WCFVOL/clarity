@@ -16,8 +16,8 @@ public interface FieldOpCursor<Y> {
 
     Y yield();
 
-    interface Delegate<Y> {
-        Delegate<Y> down(int i);
+    interface Delegate<Y, D extends Delegate> {
+        D down(int i);
         Y yield();
     }
 

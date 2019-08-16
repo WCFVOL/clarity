@@ -5,7 +5,7 @@ import skadistats.clarity.decoder.unpacker.Unpacker;
 
 import java.util.function.IntFunction;
 
-public interface UnpackerCursorDelegate extends FieldOpCursor.Delegate<Unpacker> {
+public interface UnpackerCursorDelegate extends FieldOpCursor.Delegate<Unpacker, UnpackerCursorDelegate> {
 
     static UnpackerCursorDelegate create(Unpacker unpacker) {
         return create(unpacker, i -> { throw new UnsupportedOperationException(); });
@@ -18,7 +18,7 @@ public interface UnpackerCursorDelegate extends FieldOpCursor.Delegate<Unpacker>
     static UnpackerCursorDelegate create(Unpacker unpacker, IntFunction<UnpackerCursorDelegate> nextDownFunction) {
         return new UnpackerCursorDelegate() {
             @Override
-            public FieldOpCursor.Delegate<Unpacker> down(int i) {
+            public UnpackerCursorDelegate down(int i) {
                 return nextDownFunction.apply(i);
             }
             @Override

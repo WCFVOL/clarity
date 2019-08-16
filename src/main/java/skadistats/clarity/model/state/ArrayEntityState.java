@@ -19,4 +19,16 @@ public interface ArrayEntityState {
         return capacity(wantedSize, false);
     }
 
+    default Accessor accessor(int idx) {
+        return null;
+    }
+
+    interface Accessor {
+        boolean has();
+        Object get();
+        void set(Object value);
+        void clear();
+        ArrayEntityState sub();
+    }
+
 }

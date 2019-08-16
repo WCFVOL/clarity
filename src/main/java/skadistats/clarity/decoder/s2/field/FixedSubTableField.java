@@ -11,6 +11,7 @@ import java.util.List;
 public class FixedSubTableField extends Field {
 
     private final UnpackerCursorDelegate unpackerCursorDelegate;
+    private final FieldSetterCursorDelegate fieldSetterCursorDelegate;
 
     public FixedSubTableField(FieldProperties properties) {
         super(properties);
@@ -18,6 +19,25 @@ public class FixedSubTableField extends Field {
                 S2UnpackerFactory.createUnpacker(properties, "bool"),
                 i -> properties.getSerializer().getFields()[i].getUnpackerCursorDelegate()
         );
+        fieldSetterCursorDelegate = FieldSetterCursorDelegate.create(
+                accessor -> value -> {
+                    boolean existing = (Boolean) value;
+                    if (accessor.has() && !existing) {
+                        accessor.clear();
+                    }
+                },
+                i -> properties.getSerializer().getFieldSetterCursorDelegate(i)
+        );
+    }
+
+    @Override
+    public UnpackerCursorDelegate getUnpackerCursorDelegate() {
+        return unpackerCursorDelegate;
+    }
+
+    @Override
+    public FieldSetterCursorDelegate getFieldSetterCursorDelegate() {
+        return fieldSetterCursorDelegate;
     }
 
     @Override
@@ -27,11 +47,6 @@ public class FixedSubTableField extends Field {
         if (fp.last() > pos) {
             properties.getSerializer().accumulateName(fp, pos + 1, parts);
         }
-    }
-
-    @Override
-    public UnpackerCursorDelegate getUnpackerCursorDelegate() {
-        return unpackerCursorDelegate;
     }
 
     @Override

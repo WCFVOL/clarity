@@ -15,8 +15,10 @@ public abstract class Field {
         this.properties = properties;
     }
 
-    public abstract void accumulateName(S2FieldPath fp, int pos, List<String> parts);
     public abstract UnpackerCursorDelegate getUnpackerCursorDelegate();
+    public abstract FieldSetterCursorDelegate getFieldSetterCursorDelegate();
+
+    public abstract void accumulateName(S2FieldPath fp, int pos, List<String> parts);
     public abstract Field getFieldForFieldPath(S2FieldPath fp, int pos);
     public abstract FieldType getTypeForFieldPath(S2FieldPath fp, int pos);
     public abstract Object getValueForFieldPath(S2FieldPath fp, int pos, ArrayEntityState state);
