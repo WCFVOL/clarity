@@ -144,8 +144,7 @@ public class S2DTClassEmitter {
                         protoField.lowValue,
                         protoField.highValue,
                         fieldSerializer,
-                        protoField.encoderType,
-                        protoField.serializerType
+                        protoField.encoderType
                     );
                     field = createField(fieldProperties, unpackerProperties);
                     fields[fi] = field;
@@ -198,7 +197,6 @@ public class S2DTClassEmitter {
         private String serializerName;
         private Integer serializerVersion;
         private String encoderType;
-        public String serializerType;
         private Integer encodeFlags;
         private Integer bitCount;
         private Float lowValue;
@@ -211,7 +209,6 @@ public class S2DTClassEmitter {
             this.serializerName = field.hasFieldSerializerNameSym() ? serializer.getSymbols(field.getFieldSerializerNameSym()) : null;
             this.serializerVersion = field.hasFieldSerializerVersion() ? field.getFieldSerializerVersion() : null;
             this.encoderType = field.hasVarEncoderSym() ? serializer.getSymbols(field.getVarEncoderSym()) : null;
-            this.serializerType = null; // TODO: we hope to get this from the replay in the future
             this.encodeFlags = field.hasEncodeFlags() ? field.getEncodeFlags() : null;
             this.bitCount = field.hasBitCount() ? field.getBitCount() : null;
             this.lowValue = field.hasLowValue() ? field.getLowValue() : null;
@@ -289,7 +286,7 @@ public class S2DTClassEmitter {
             @Override
             public void execute(SerializerField field) {
                 if (simTime.contains(field.varName)) {
-                    field.serializerType = "simulationtime";
+                    field.encoderType = "simulationtime";
                 }
             }
         });
