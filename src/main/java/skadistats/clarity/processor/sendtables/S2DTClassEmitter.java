@@ -37,6 +37,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 
 @Provides(value =  {OnDTClass.class, OnDTClassesComplete.class}, engine = EngineId.SOURCE2)
 public class S2DTClassEmitter {
@@ -117,7 +118,11 @@ public class S2DTClassEmitter {
             for (int fi : protoSerializer.getFieldsIndexList()) {
                 Field field = fields[fi];
                 if (field == null) {
-                    SerializerField protoField = new SerializerField(protoMessage.getSymbols(protoSerializer.getSerializerNameSym()), protoMessage, protoMessage.getFields(fi));
+                    SerializerField protoField = new SerializerField(
+                            protoMessage.getSymbols(protoSerializer.getSerializerNameSym()),
+                            protoMessage,
+                            protoMessage.getFields(fi)
+                    );
                     for (Map.Entry<BuildNumberRange, PatchFunc> patchEntry : PATCHES.entrySet()) {
                         if (patchEntry.getKey().appliesTo(ctx.getBuildNumber())) {
                             patchEntry.getValue().execute(protoField);
@@ -134,12 +139,12 @@ public class S2DTClassEmitter {
                             new SerializerId(protoField.serializerName, protoField.serializerVersion)
                         );
                     }
-                    FieldProperties fieldProperties = new FieldProperties(
+                    FieldProperties fieldProperties = new FieldPropertiesImpl(
                             fieldType,
                             () -> protoField.varName,
                             fieldSerializer
                     );
-                    UnpackerProperties unpackerProperties = new UnpackerProperties(
+                    UnpackerProperties unpackerProperties = new UnpackerPropertiesImpl(
                             protoField.encodeFlags,
                             protoField.bitCount,
                             protoField.lowValue,
@@ -213,6 +218,96 @@ public class S2DTClassEmitter {
             this.bitCount = field.hasBitCount() ? field.getBitCount() : null;
             this.lowValue = field.hasLowValue() ? field.getLowValue() : null;
             this.highValue = field.hasHighValue() ? field.getHighValue() : null;
+        }
+    }
+
+    public static class FieldPropertiesImpl implements FieldProperties {
+
+        private FieldType fieldType;
+        private Supplier<String> nameSupplier;
+        private Serializer serializer;
+
+        public FieldPropertiesImpl(FieldType fieldType, Supplier<String> nameSupplier, Serializer serializer) {
+            this.fieldType = fieldType;
+            this.nameSupplier = nameSupplier;
+            this.serializer = serializer;
+        }
+
+        @Override
+        public FieldType getType() {
+            return fieldType;
+        }
+
+        @Override
+        public String getName() {
+            return nameSupplier.get();
+        }
+
+        @Override
+        public Serializer getSerializer() {
+            return serializer;
+        }
+    }
+
+    public static class UnpackerPropertiesImpl implements UnpackerProperties {
+
+        private Integer encodeFlags;
+        private Integer bitCount;
+        private Float lowValue;
+        private Float highValue;
+        private String encoderType;
+
+        public UnpackerPropertiesImpl(Integer encodeFlags, Integer bitCount, Float lowValue, Float highValue, String encoderType) {
+            this.encodeFlags = encodeFlags;
+            this.bitCount = bitCount;
+            this.lowValue = lowValue;
+            this.highValue = highValue;
+            this.encoderType = encoderType;
+        }
+
+        @Override
+        public Integer getEncodeFlags() {
+            return encodeFlags;
+        }
+
+        @Override
+        public Integer getBitCount() {
+            return bitCount;
+        }
+
+        @Override
+        public Float getLowValue() {
+            return lowValue;
+        }
+
+        @Override
+        public Float getHighValue() {
+            return highValue;
+        }
+
+        @Override
+        public String getEncoderType() {
+            return encoderType;
+        }
+
+        @Override
+        public int getEncodeFlagsOrDefault(int defaultValue) {
+            return encodeFlags != null ? encodeFlags : defaultValue;
+        }
+
+        @Override
+        public int getBitCountOrDefault(int defaultValue) {
+            return bitCount != null ? bitCount : defaultValue;
+        }
+
+        @Override
+        public float getLowValueOrDefault(float defaultValue) {
+            return lowValue != null ? lowValue : defaultValue;
+        }
+
+        @Override
+        public float getHighValueOrDefault(float defaultValue) {
+            return highValue != null ? highValue : defaultValue;
         }
     }
 
