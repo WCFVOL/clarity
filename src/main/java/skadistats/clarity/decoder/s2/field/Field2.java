@@ -12,6 +12,10 @@ public abstract class Field2 {
         return fieldProperties;
     }
 
+    public UnpackerProperties getUnpackerProperties() {
+        throw new UnsupportedOperationException();
+    }
+
     public String toString() {
         return fieldProperties.getName(0) + "(" + fieldProperties.getType() + ")";
     }

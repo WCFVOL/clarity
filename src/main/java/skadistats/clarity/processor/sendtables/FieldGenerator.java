@@ -1,6 +1,7 @@
 package skadistats.clarity.processor.sendtables;
 
 import skadistats.clarity.decoder.Util;
+import skadistats.clarity.decoder.s2.S2DTClass;
 import skadistats.clarity.decoder.s2.S2UnpackerFactory;
 import skadistats.clarity.decoder.s2.Serializer;
 import skadistats.clarity.decoder.s2.Serializer2;
@@ -45,7 +46,7 @@ public class FieldGenerator {
         }
     }
 
-    public void run() {
+    public void createFields() {
         for (int i = 0; i < fieldData.length; i++) {
             fieldData[i] = generateFieldData(protoMessage.getFields(i));
         }
@@ -53,6 +54,14 @@ public class FieldGenerator {
             Serializer2 serializer = generateSerializer(protoMessage.getSerializers(i));
             serializers.put(serializer.getId(), serializer);
         }
+    }
+
+    public S2DTClass createDTClass(String name) {
+        RecordField field = new RecordField(
+                new FieldPropertiesImpl(FieldType.forString(name), i -> name),
+                serializers.get(new SerializerId(name, 0))
+        );
+        return new S2DTClass(field);
     }
 
     private FieldData generateFieldData(S2NetMessages.ProtoFlattenedSerializerField_t proto) {

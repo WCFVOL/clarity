@@ -1,8 +1,7 @@
 package skadistats.clarity.model.state;
 
-import skadistats.clarity.decoder.s2.Serializer;
+import skadistats.clarity.decoder.s2.Serializer2;
 import skadistats.clarity.model.FieldPath;
-import skadistats.clarity.model.s2.S2ModifiableFieldPath;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -12,11 +11,11 @@ import java.util.List;
 
 public class NestedArrayEntityState implements EntityState, ArrayEntityState {
 
-    private final Serializer serializer;
+    private final Serializer2 serializer;
     private final List<Entry> entries;
     private Deque<Integer> freeEntries;
 
-    public NestedArrayEntityState(Serializer serializer) {
+    public NestedArrayEntityState(Serializer2 serializer) {
         this.serializer = serializer;
         entries = new ArrayList<>(20);
         entries.add(new Entry());
@@ -88,19 +87,22 @@ public class NestedArrayEntityState implements EntityState, ArrayEntityState {
 
     @Override
     public void setValueForFieldPath(FieldPath fp, Object value) {
-        serializer.setValueForFieldPath(fp.s2(), 0, this, value);
+        throw new UnsupportedOperationException();
+        //serializer.setValueForFieldPath(fp.s2(), 0, this, value);
     }
 
     @Override
     public <T> T getValueForFieldPath(FieldPath fp) {
-        return (T) serializer.getValueForFieldPath(fp.s2(), 0, this);
+        throw new UnsupportedOperationException();
+        //return (T) serializer.getValueForFieldPath(fp.s2(), 0, this);
     }
 
     @Override
     public Iterator<FieldPath> fieldPathIterator() {
-        List<FieldPath> result = new ArrayList<>();
-        serializer.collectFieldPaths(S2ModifiableFieldPath.newInstance(), result, this);
-        return result.iterator();
+        throw new UnsupportedOperationException();
+//        List<FieldPath> result = new ArrayList<>();
+//        serializer.collectFieldPaths(S2ModifiableFieldPath.newInstance(), result, this);
+//        return result.iterator();
     }
 
     private EntryRef createEntryRef(Entry entry) {

@@ -11,4 +11,8 @@ public class RecordField extends Field2 {
         this.serializer = serializer;
     }
 
+    public Serializer2 getSerializer() {
+        return serializer;
+    }
+
 }
