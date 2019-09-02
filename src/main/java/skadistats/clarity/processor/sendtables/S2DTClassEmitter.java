@@ -108,6 +108,8 @@ public class S2DTClassEmitter {
 
     @OnMessage(S2NetMessages.CSVCMsg_FlattenedSerializer.class)
     public void onFlattenedSerializers(S2NetMessages.CSVCMsg_FlattenedSerializer protoMessage) throws IOException {
+        new FieldGenerator(protoMessage, ctx.getBuildNumber()).run();
+
         Map<SerializerId, Serializer> serializers = new HashMap<>();
         Map<String, FieldType> fieldTypes = new HashMap<>();
         Field[] fields = new Field[protoMessage.getFieldsCount()];
@@ -239,7 +241,7 @@ public class S2DTClassEmitter {
         }
 
         @Override
-        public String getName() {
+        public String getName(int i) {
             return nameSupplier.get();
         }
 
@@ -319,10 +321,10 @@ public class S2DTClassEmitter {
     static {
         PATCHES.put(new BuildNumberRange(null, 990), new PatchFunc() {
             Map<String, String> encoders = new HashMap<>(); {
-                encoders.put("CBodyComponentBaseAnimating.m_angRotation", "QAngle");
+                //encoders.put("CBodyComponentBaseAnimating.m_angRotation", "QAngle");
                 encoders.put("CBaseAnimating.m_flElasticity", "coord");
                 encoders.put("CBaseAttributableItem.m_viewtarget", "coord");
-                encoders.put("CBodyComponentPoint.m_angRotation", "QAngle");
+                //encoders.put("CBodyComponentPoint.m_angRotation", "QAngle");
                 encoders.put("CPlayerLocalData.dirPrimary", "coord");
                 encoders.put("CPlayerLocalData.origin", "coord");
                 encoders.put("CPlayerLocalData.localSound", "coord");
@@ -401,8 +403,6 @@ public class S2DTClassEmitter {
                 }
             }
         });
-
-
     }
 
 }

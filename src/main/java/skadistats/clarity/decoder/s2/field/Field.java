@@ -28,7 +28,7 @@ public abstract class Field {
     public abstract void collectFieldPaths(S2ModifiableFieldPath fp, List<FieldPath> entries, ArrayEntityState state);
 
     protected void addBasePropertyName(List<String> parts) {
-        parts.add(fieldProperties.getName());
+        parts.add(fieldProperties.getName(0));
     }
 
     public UnpackerProperties getUnpackerProperties() {

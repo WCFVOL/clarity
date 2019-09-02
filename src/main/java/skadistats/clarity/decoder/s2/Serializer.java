@@ -63,7 +63,7 @@ public class Serializer {
     private S2FieldPath getFieldPathForNameInternal(S2ModifiableFieldPath fp, String property) {
         for (int i = 0; i < fields.length; i++) {
             Field field = fields[i];
-            String fieldName = field.getFieldProperties().getName();
+            String fieldName = field.getFieldProperties().getName(0);
             if (property.startsWith(fieldName)) {
                 fp.cur(i);
                 if (property.length() == fieldName.length()) {
