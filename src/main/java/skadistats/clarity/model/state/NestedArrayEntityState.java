@@ -1,7 +1,9 @@
 package skadistats.clarity.model.state;
 
-import skadistats.clarity.decoder.s2.Serializer2;
+import skadistats.clarity.decoder.s2.field.Field2;
+import skadistats.clarity.decoder.s2.field.RecordField;
 import skadistats.clarity.model.FieldPath;
+import skadistats.clarity.model.s2.S2FieldPath;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -11,18 +13,18 @@ import java.util.List;
 
 public class NestedArrayEntityState implements EntityState, ArrayEntityState {
 
-    private final Serializer2 serializer;
+    private final RecordField field;
     private final List<Entry> entries;
     private Deque<Integer> freeEntries;
 
-    public NestedArrayEntityState(Serializer2 serializer) {
-        this.serializer = serializer;
+    public NestedArrayEntityState(RecordField field) {
+        this.field = field;
         entries = new ArrayList<>(20);
         entries.add(new Entry());
     }
 
     private NestedArrayEntityState(NestedArrayEntityState other) {
-        serializer = other.serializer;
+        field = other.field;
         int otherSize = other.entries.size();
         entries = new ArrayList<>(otherSize + 4);
         for (int i = 0; i < otherSize; i++) {
@@ -87,6 +89,13 @@ public class NestedArrayEntityState implements EntityState, ArrayEntityState {
 
     @Override
     public void setValueForFieldPath(FieldPath fp, Object value) {
+        S2FieldPath fp2 = fp.s2();
+        int last = fp2.last();
+        Field2 f = field;
+        for (int i = 0; i < last; i++) {
+
+        }
+
         //throw new UnsupportedOperationException();
         //serializer.setValueForFieldPath(fp.s2(), 0, this, value);
     }

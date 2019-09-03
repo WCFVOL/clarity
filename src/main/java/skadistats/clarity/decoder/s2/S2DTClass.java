@@ -41,7 +41,7 @@ public class S2DTClass implements DTClass {
 
     @Override
     public EntityState getEmptyState() {
-        return EntityStateFactory.forS2(field.getSerializer());
+        return EntityStateFactory.forS2(field);
     }
 
     @Override
