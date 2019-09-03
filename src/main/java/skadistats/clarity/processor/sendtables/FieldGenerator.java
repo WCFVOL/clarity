@@ -3,7 +3,6 @@ package skadistats.clarity.processor.sendtables;
 import skadistats.clarity.decoder.Util;
 import skadistats.clarity.decoder.s2.S2DTClass;
 import skadistats.clarity.decoder.s2.S2UnpackerFactory;
-import skadistats.clarity.decoder.s2.Serializer;
 import skadistats.clarity.decoder.s2.Serializer2;
 import skadistats.clarity.decoder.s2.SerializerId;
 import skadistats.clarity.decoder.s2.field.CArrayField;
@@ -195,11 +194,6 @@ public class FieldGenerator {
         @Override
         public String getName(int i) {
             return nameFunction.apply(i);
-        }
-
-        @Override
-        public Serializer getSerializer() {
-            return null;
         }
 
     }
