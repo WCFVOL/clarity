@@ -1,6 +1,8 @@
-package skadistats.clarity.decoder.s2.field;
+package skadistats.clarity.decoder.s2.field.impl;
 
-import skadistats.clarity.decoder.s2.field.iface.Unpackable;
+import skadistats.clarity.decoder.s2.field.FieldProperties;
+import skadistats.clarity.decoder.s2.field.Unpackable;
+import skadistats.clarity.decoder.s2.field.UnpackerProperties;
 import skadistats.clarity.decoder.unpacker.Unpacker;
 
 public class ValueField extends Field implements Unpackable {

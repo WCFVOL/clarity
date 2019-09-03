@@ -1,6 +1,6 @@
 package skadistats.clarity.decoder.s2;
 
-import skadistats.clarity.decoder.s2.field.Field;
+import skadistats.clarity.decoder.s2.field.impl.Field;
 
 public class Serializer {
 

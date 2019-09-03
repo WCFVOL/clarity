@@ -1,6 +1,7 @@
-package skadistats.clarity.decoder.s2.field;
+package skadistats.clarity.decoder.s2.field.impl;
 
 import skadistats.clarity.decoder.s2.Serializer;
+import skadistats.clarity.decoder.s2.field.FieldProperties;
 
 public class RecordField extends Field {
 

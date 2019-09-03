@@ -1,4 +1,4 @@
-package skadistats.clarity.decoder.s2.field.iface;
+package skadistats.clarity.decoder.s2.field;
 
 import skadistats.clarity.decoder.unpacker.Unpacker;
 

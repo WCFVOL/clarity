@@ -1,9 +1,9 @@
 package skadistats.clarity.decoder.s2;
 
-import skadistats.clarity.decoder.s2.field.Field;
 import skadistats.clarity.decoder.s2.field.FieldType;
-import skadistats.clarity.decoder.s2.field.RecordField;
-import skadistats.clarity.decoder.s2.field.iface.Unpackable;
+import skadistats.clarity.decoder.s2.field.Unpackable;
+import skadistats.clarity.decoder.s2.field.impl.Field;
+import skadistats.clarity.decoder.s2.field.impl.RecordField;
 import skadistats.clarity.decoder.unpacker.Unpacker;
 import skadistats.clarity.model.DTClass;
 import skadistats.clarity.model.FieldPath;
