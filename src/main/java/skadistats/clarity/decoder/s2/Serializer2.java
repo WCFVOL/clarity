@@ -16,8 +16,12 @@ public class Serializer2 {
         return id;
     }
 
-    public Field2[] getFields() {
-        return fields;
+    public int getFieldCount() {
+        return fields.length;
+    }
+
+    public Field2 getField(int i) {
+        return fields[i];
     }
 
 }

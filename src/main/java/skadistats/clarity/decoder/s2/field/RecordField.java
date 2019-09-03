@@ -7,12 +7,17 @@ public class RecordField extends Field2 {
     private final Serializer2 serializer;
 
     public RecordField(FieldProperties fieldProperties, Serializer2 serializer) {
-        super(fieldProperties);
+        super(fieldProperties, null);
         this.serializer = serializer;
     }
 
     public Serializer2 getSerializer() {
         return serializer;
+    }
+
+    @Override
+    public Field2 down(int i) {
+        return serializer.getField(i);
     }
 
 }

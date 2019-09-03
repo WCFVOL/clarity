@@ -5,8 +5,12 @@ public class CArrayField extends Field2 {
     private final Field2 elementField;
 
     public CArrayField(FieldProperties fieldProperties, Field2 elementField, int length) {
-        super(fieldProperties);
+        super(fieldProperties, null);
         this.elementField = elementField;
     }
 
+    @Override
+    public Field2 down(int i) {
+        return elementField;
+    }
 }

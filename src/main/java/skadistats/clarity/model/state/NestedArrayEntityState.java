@@ -87,7 +87,7 @@ public class NestedArrayEntityState implements EntityState, ArrayEntityState {
 
     @Override
     public void setValueForFieldPath(FieldPath fp, Object value) {
-        throw new UnsupportedOperationException();
+        //throw new UnsupportedOperationException();
         //serializer.setValueForFieldPath(fp.s2(), 0, this, value);
     }
 

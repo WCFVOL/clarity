@@ -1,11 +1,15 @@
 package skadistats.clarity.decoder.s2.field;
 
-public abstract class Field2 {
+import skadistats.clarity.decoder.s2.field.iface.DownFunction;
+
+public abstract class Field2 implements DownFunction<Field2> {
 
     protected final FieldProperties fieldProperties;
+    protected final UnpackerProperties unpackerProperties;
 
-    public Field2(FieldProperties fieldProperties) {
+    public Field2(FieldProperties fieldProperties, UnpackerProperties unpackerProperties) {
         this.fieldProperties = fieldProperties;
+        this.unpackerProperties = unpackerProperties;
     }
 
     public FieldProperties getFieldProperties() {
@@ -13,7 +17,7 @@ public abstract class Field2 {
     }
 
     public UnpackerProperties getUnpackerProperties() {
-        throw new UnsupportedOperationException();
+        return unpackerProperties;
     }
 
     public String toString() {

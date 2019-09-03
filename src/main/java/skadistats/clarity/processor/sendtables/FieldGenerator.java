@@ -81,9 +81,6 @@ public class FieldGenerator {
                     proto.getFieldSerializerVersion()
             );
         }
-        for (PatchFunc patchFunc : patchFuncs) {
-            patchFunc.execute(fd);
-        }
         return fd;
     }
 
@@ -96,28 +93,34 @@ public class FieldGenerator {
         for (int i = 0; i < fields.length; i++) {
             int fi = proto.getFieldsIndex(i);
             if (fieldData[fi].field == null) {
-                fieldData[fi].field = createField(fieldData[fi]);
+                fieldData[fi].field = createField(sid, fieldData[fi]);
             }
             fields[i] = fieldData[fi].field;
         }
         return new Serializer2(sid, fields);
     }
 
-    private Field2 createField(FieldData fd) {
+    private Field2 createField(SerializerId sId, FieldData fd) {
+        for (PatchFunc patchFunc : patchFuncs) {
+            patchFunc.execute(sId, fd);
+        }
         if (fd.serializerId != null) {
+            Serializer2 subSerializer = serializers.get(fd.serializerId);
             if (POINTERS.contains(fd.fieldType.getBaseType())) {
                 return new PointerField(
                         new FieldPropertiesImpl(fd.fieldType, fd.nameFunction),
+                        UnpackerProperties.DEFAULT,
                         S2UnpackerFactory.createUnpacker(UnpackerProperties.DEFAULT, "bool"),
-                        serializers.get(fd.serializerId)
+                        subSerializer
                 );
             } else {
                 return new VArrayField(
                         new FieldPropertiesImpl(fd.fieldType, fd.nameFunction),
+                        UnpackerProperties.DEFAULT,
                         S2UnpackerFactory.createUnpacker(UnpackerProperties.DEFAULT, "uint32"),
                         new RecordField(
                                 new FieldPropertiesImpl(fd.fieldType, Util::arrayIdxToString),
-                                serializers.get(fd.serializerId)
+                                subSerializer
                         )
                 );
             }
@@ -132,6 +135,7 @@ public class FieldGenerator {
                     new FieldPropertiesImpl(fd.fieldType, fd.nameFunction),
                     new ValueField(
                             new FieldPropertiesImpl(fd.fieldType.getElementType(), Util::arrayIdxToString),
+                            fd.unpackerProperties,
                             S2UnpackerFactory.createUnpacker(fd.unpackerProperties, fd.fieldType.getBaseType())
                     ),
                     countAsInt
@@ -140,15 +144,18 @@ public class FieldGenerator {
         if ("CUtlVector".equals(fd.fieldType.getBaseType())) {
             return new VArrayField(
                     new FieldPropertiesImpl(fd.fieldType, fd.nameFunction),
+                    UnpackerProperties.DEFAULT,
                     S2UnpackerFactory.createUnpacker(UnpackerProperties.DEFAULT, "uint32"),
                     new ValueField(
                             new FieldPropertiesImpl(fd.fieldType.getGenericType(), Util::arrayIdxToString),
+                            fd.unpackerProperties,
                             S2UnpackerFactory.createUnpacker(fd.unpackerProperties, fd.fieldType.getGenericType().getBaseType())
                     )
             );
         }
         return new ValueField(
                 new FieldPropertiesImpl(fd.fieldType, fd.nameFunction),
+                fd.unpackerProperties,
                 S2UnpackerFactory.createUnpacker(fd.unpackerProperties, fd.fieldType.getBaseType())
         );
     }
@@ -277,13 +284,16 @@ public class FieldGenerator {
         ITEM_COUNTS.put("MAX_ABILITY_DRAFT_ABILITIES", 48);
     }
 
+    private static final SerializerId SID_PITCH_YAW = new SerializerId("CBodyComponentBaseAnimatingOverlay", 3);
+
+
     private interface PatchFunc {
-        void execute(FieldData field);
+        void execute(SerializerId serializerId, FieldData field);
     }
 
     private static final Map<BuildNumberRange, PatchFunc> PATCHES = new LinkedHashMap<>();
     static {
-        PATCHES.put(new BuildNumberRange(null, 990), field -> {
+        PATCHES.put(new BuildNumberRange(null, 990), (serializerId, field) -> {
             switch (field.nameFunction.apply(0)) {
                 case "dirPrimary":
                 case "localSound":
@@ -321,12 +331,12 @@ public class FieldGenerator {
                     break;
 
                 case "m_angRotation":
-                    field.unpackerProperties.encoderType = "qangle_pitch_yaw";
+                    field.unpackerProperties.encoderType = SID_PITCH_YAW.equals(serializerId) ? "qangle_pitch_yaw" : "QAngle";
                     break;
             }
         });
 
-        PATCHES.put(new BuildNumberRange(1016, 1026), field -> {
+        PATCHES.put(new BuildNumberRange(1016, 1026), (serializerId, field) -> {
             switch (field.nameFunction.apply(0)) {
                 case "m_bWorldTreeState":
                 case "m_ulTeamLogo":
@@ -339,7 +349,7 @@ public class FieldGenerator {
             }
         });
 
-        PATCHES.put(new BuildNumberRange(null, null), field -> {
+        PATCHES.put(new BuildNumberRange(null, null), (serializerId, field) -> {
             switch (field.nameFunction.apply(0)) {
                 case "m_flSimulationTime":
                 case "m_flAnimTime":
@@ -347,7 +357,7 @@ public class FieldGenerator {
             }
         });
 
-        PATCHES.put(new BuildNumberRange(null, 954), field -> {
+        PATCHES.put(new BuildNumberRange(null, 954), (serializerId, field) -> {
             switch (field.nameFunction.apply(0)) {
                 case "m_flMana":
                 case "m_flMaxMana":

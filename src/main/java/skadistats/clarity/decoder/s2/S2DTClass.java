@@ -1,8 +1,9 @@
 package skadistats.clarity.decoder.s2;
 
-import skadistats.clarity.decoder.s2.field.Field;
+import skadistats.clarity.decoder.s2.field.Field2;
 import skadistats.clarity.decoder.s2.field.FieldType;
 import skadistats.clarity.decoder.s2.field.RecordField;
+import skadistats.clarity.decoder.s2.field.iface.Unpackable;
 import skadistats.clarity.decoder.unpacker.Unpacker;
 import skadistats.clarity.model.DTClass;
 import skadistats.clarity.model.FieldPath;
@@ -44,33 +45,43 @@ public class S2DTClass implements DTClass {
     }
 
     @Override
-    public String getNameForFieldPath(FieldPath fp) {
-        throw new UnsupportedOperationException();
-//        List<String> parts = new ArrayList<>();
-//        serializer.accumulateName(fp.s2(), 0, parts);
-//        StringBuilder b = new StringBuilder();
-//        for (String part : parts) {
-//            if (b.length() != 0) {
-//                b.append('.');
-//            }
-//            b.append(part);
-//        }
-//        return b.toString();
+    public String getNameForFieldPath(FieldPath fpX) {
+        S2FieldPath fp = fpX.s2();
+        Field2 f = field;
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i <= fp.last(); i++) {
+            int fi = fp.get(i);
+            f = f.down(fi);
+            if (i != 0) {
+                sb.append('.');
+            }
+            sb.append(f.getFieldProperties().getName(fi));
+        }
+        return sb.toString();
     }
 
     public Unpacker getUnpackerForFieldPath(S2FieldPath fp) {
-        throw new UnsupportedOperationException();
-        //return serializer.getUnpackerForFieldPath(fp, 0);
+        Field2 f = field;
+        for (int i = 0; i <= fp.last(); i++) {
+            f = f.down(fp.get(i));
+        }
+        return ((Unpackable) f).getUnpacker();
     }
 
-    public Field getFieldForFieldPath(S2FieldPath fp) {
-        throw new UnsupportedOperationException();
-        //return serializer.getFieldForFieldPath(fp, 0);
+    public Field2 getFieldForFieldPath(S2FieldPath fp) {
+        Field2 f = field;
+        for (int i = 0; i <= fp.last(); i++) {
+            f = f.down(fp.get(i));
+        }
+        return f;
     }
 
     public FieldType getTypeForFieldPath(S2FieldPath fp) {
-        throw new UnsupportedOperationException();
-        //return serializer.getTypeForFieldPath(fp, 0);
+        Field2 f = field;
+        for (int i = 0; i <= fp.last(); i++) {
+            f = f.down(fp.get(i));
+        }
+        return f.getFieldProperties().getType();
     }
 
     @Override
