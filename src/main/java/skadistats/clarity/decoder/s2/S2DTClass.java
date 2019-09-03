@@ -1,6 +1,6 @@
 package skadistats.clarity.decoder.s2;
 
-import skadistats.clarity.decoder.s2.field.Field2;
+import skadistats.clarity.decoder.s2.field.Field;
 import skadistats.clarity.decoder.s2.field.FieldType;
 import skadistats.clarity.decoder.s2.field.RecordField;
 import skadistats.clarity.decoder.s2.field.iface.Unpackable;
@@ -47,7 +47,7 @@ public class S2DTClass implements DTClass {
     @Override
     public String getNameForFieldPath(FieldPath fpX) {
         S2FieldPath fp = fpX.s2();
-        Field2 f = field;
+        Field f = field;
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i <= fp.last(); i++) {
             int fi = fp.get(i);
@@ -61,15 +61,15 @@ public class S2DTClass implements DTClass {
     }
 
     public Unpacker getUnpackerForFieldPath(S2FieldPath fp) {
-        Field2 f = field;
+        Field f = field;
         for (int i = 0; i <= fp.last(); i++) {
             f = f.down(fp.get(i));
         }
         return ((Unpackable) f).getUnpacker();
     }
 
-    public Field2 getFieldForFieldPath(S2FieldPath fp) {
-        Field2 f = field;
+    public Field getFieldForFieldPath(S2FieldPath fp) {
+        Field f = field;
         for (int i = 0; i <= fp.last(); i++) {
             f = f.down(fp.get(i));
         }
@@ -77,7 +77,7 @@ public class S2DTClass implements DTClass {
     }
 
     public FieldType getTypeForFieldPath(S2FieldPath fp) {
-        Field2 f = field;
+        Field f = field;
         for (int i = 0; i <= fp.last(); i++) {
             f = f.down(fp.get(i));
         }

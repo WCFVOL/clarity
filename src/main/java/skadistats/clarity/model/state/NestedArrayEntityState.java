@@ -1,6 +1,6 @@
 package skadistats.clarity.model.state;
 
-import skadistats.clarity.decoder.s2.field.Field2;
+import skadistats.clarity.decoder.s2.field.Field;
 import skadistats.clarity.decoder.s2.field.RecordField;
 import skadistats.clarity.model.FieldPath;
 import skadistats.clarity.model.s2.S2FieldPath;
@@ -91,7 +91,7 @@ public class NestedArrayEntityState implements EntityState, ArrayEntityState {
     public void setValueForFieldPath(FieldPath fp, Object value) {
         S2FieldPath fp2 = fp.s2();
         int last = fp2.last();
-        Field2 f = field;
+        Field f = field;
         for (int i = 0; i < last; i++) {
 
         }

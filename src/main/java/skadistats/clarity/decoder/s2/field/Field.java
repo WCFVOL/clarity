@@ -2,12 +2,12 @@ package skadistats.clarity.decoder.s2.field;
 
 import skadistats.clarity.decoder.s2.field.iface.DownFunction;
 
-public abstract class Field2 implements DownFunction<Field2> {
+public abstract class Field implements DownFunction<Field> {
 
     protected final FieldProperties fieldProperties;
     protected final UnpackerProperties unpackerProperties;
 
-    public Field2(FieldProperties fieldProperties, UnpackerProperties unpackerProperties) {
+    public Field(FieldProperties fieldProperties, UnpackerProperties unpackerProperties) {
         this.fieldProperties = fieldProperties;
         this.unpackerProperties = unpackerProperties;
     }

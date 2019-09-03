@@ -1,16 +1,16 @@
 package skadistats.clarity.decoder.s2.field;
 
-public class CArrayField extends Field2 {
+public class CArrayField extends Field {
 
-    private final Field2 elementField;
+    private final Field elementField;
 
-    public CArrayField(FieldProperties fieldProperties, Field2 elementField, int length) {
+    public CArrayField(FieldProperties fieldProperties, Field elementField, int length) {
         super(fieldProperties, null);
         this.elementField = elementField;
     }
 
     @Override
-    public Field2 down(int i) {
+    public Field down(int i) {
         return elementField;
     }
 }

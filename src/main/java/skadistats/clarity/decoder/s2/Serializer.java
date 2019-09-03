@@ -1,13 +1,13 @@
 package skadistats.clarity.decoder.s2;
 
-import skadistats.clarity.decoder.s2.field.Field2;
+import skadistats.clarity.decoder.s2.field.Field;
 
-public class Serializer2 {
+public class Serializer {
 
     private final SerializerId id;
-    private final Field2[] fields;
+    private final Field[] fields;
 
-    public Serializer2(SerializerId id, Field2[] fields) {
+    public Serializer(SerializerId id, Field[] fields) {
         this.id = id;
         this.fields = fields;
     }
@@ -20,7 +20,7 @@ public class Serializer2 {
         return fields.length;
     }
 
-    public Field2 getField(int i) {
+    public Field getField(int i) {
         return fields[i];
     }
 

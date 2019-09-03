@@ -3,10 +3,10 @@ package skadistats.clarity.processor.sendtables;
 import skadistats.clarity.decoder.Util;
 import skadistats.clarity.decoder.s2.S2DTClass;
 import skadistats.clarity.decoder.s2.S2UnpackerFactory;
-import skadistats.clarity.decoder.s2.Serializer2;
+import skadistats.clarity.decoder.s2.Serializer;
 import skadistats.clarity.decoder.s2.SerializerId;
 import skadistats.clarity.decoder.s2.field.CArrayField;
-import skadistats.clarity.decoder.s2.field.Field2;
+import skadistats.clarity.decoder.s2.field.Field;
 import skadistats.clarity.decoder.s2.field.FieldProperties;
 import skadistats.clarity.decoder.s2.field.FieldType;
 import skadistats.clarity.decoder.s2.field.PointerField;
@@ -32,7 +32,7 @@ public class FieldGenerator {
     private final FieldData[] fieldData;
     private final List<PatchFunc> patchFuncs;
 
-    private final Map<SerializerId, Serializer2> serializers = new HashMap<>();
+    private final Map<SerializerId, Serializer> serializers = new HashMap<>();
 
     public FieldGenerator(S2NetMessages.CSVCMsg_FlattenedSerializer protoMessage, int buildNumber) {
         this.protoMessage = protoMessage;
@@ -50,7 +50,7 @@ public class FieldGenerator {
             fieldData[i] = generateFieldData(protoMessage.getFields(i));
         }
         for (int i = 0; i < protoMessage.getSerializersCount(); i++) {
-            Serializer2 serializer = generateSerializer(protoMessage.getSerializers(i));
+            Serializer serializer = generateSerializer(protoMessage.getSerializers(i));
             serializers.put(serializer.getId(), serializer);
         }
     }
@@ -83,12 +83,12 @@ public class FieldGenerator {
         return fd;
     }
 
-    private Serializer2 generateSerializer(S2NetMessages.ProtoFlattenedSerializer_t proto) {
+    private Serializer generateSerializer(S2NetMessages.ProtoFlattenedSerializer_t proto) {
         SerializerId sid = new SerializerId(
                 sym(proto.getSerializerNameSym()),
                 proto.getSerializerVersion()
         );
-        Field2[] fields = new Field2[proto.getFieldsIndexCount()];
+        Field[] fields = new Field[proto.getFieldsIndexCount()];
         for (int i = 0; i < fields.length; i++) {
             int fi = proto.getFieldsIndex(i);
             if (fieldData[fi].field == null) {
@@ -96,15 +96,15 @@ public class FieldGenerator {
             }
             fields[i] = fieldData[fi].field;
         }
-        return new Serializer2(sid, fields);
+        return new Serializer(sid, fields);
     }
 
-    private Field2 createField(SerializerId sId, FieldData fd) {
+    private Field createField(SerializerId sId, FieldData fd) {
         for (PatchFunc patchFunc : patchFuncs) {
             patchFunc.execute(sId, fd);
         }
         if (fd.serializerId != null) {
-            Serializer2 subSerializer = serializers.get(fd.serializerId);
+            Serializer subSerializer = serializers.get(fd.serializerId);
             if (POINTERS.contains(fd.fieldType.getBaseType())) {
                 return new PointerField(
                         new FieldPropertiesImpl(fd.fieldType, fd.nameFunction),
@@ -173,7 +173,7 @@ public class FieldGenerator {
         private IntFunction<String> nameFunction;
         private UnpackerPropertiesImpl unpackerProperties;
         private SerializerId serializerId;
-        private Field2 field;
+        private Field field;
     }
 
     public static class FieldPropertiesImpl implements FieldProperties {

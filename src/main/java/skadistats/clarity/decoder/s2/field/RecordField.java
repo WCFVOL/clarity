@@ -1,22 +1,22 @@
 package skadistats.clarity.decoder.s2.field;
 
-import skadistats.clarity.decoder.s2.Serializer2;
+import skadistats.clarity.decoder.s2.Serializer;
 
-public class RecordField extends Field2 {
+public class RecordField extends Field {
 
-    private final Serializer2 serializer;
+    private final Serializer serializer;
 
-    public RecordField(FieldProperties fieldProperties, Serializer2 serializer) {
+    public RecordField(FieldProperties fieldProperties, Serializer serializer) {
         super(fieldProperties, null);
         this.serializer = serializer;
     }
 
-    public Serializer2 getSerializer() {
+    public Serializer getSerializer() {
         return serializer;
     }
 
     @Override
-    public Field2 down(int i) {
+    public Field down(int i) {
         return serializer.getField(i);
     }
 

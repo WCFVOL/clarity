@@ -3,7 +3,7 @@ package skadistats.clarity.decoder.s2.field;
 import skadistats.clarity.decoder.s2.field.iface.Unpackable;
 import skadistats.clarity.decoder.unpacker.Unpacker;
 
-public class ValueField extends Field2 implements Unpackable {
+public class ValueField extends Field implements Unpackable {
 
     private final Unpacker<?> unpacker;
 
@@ -13,7 +13,7 @@ public class ValueField extends Field2 implements Unpackable {
     }
 
     @Override
-    public Field2 down(int i) {
+    public Field down(int i) {
         return null;
     }
 
