@@ -7,12 +7,13 @@
     <packaging>jar</packaging>
     <name>clarity</name>
     <description>Clarity is a fast, almost complete replay parser for Dota 2.</description>
-    <url>https://github.com/skadistats/clarity</url>
+    <url>https://github.com/WCFVOL/clarity</url>
 
     <properties>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <github.global.server>github</github.global.server>
     </properties>
 
     <licenses>
@@ -24,9 +25,9 @@
     </licenses>
 
     <scm>
-        <url>https://github.com/skadistats/clarity</url>
-        <connection>scm:git:git@github.com:skadistats/clarity.git</connection>
-        <developerConnection>scm:git:git@github.com:skadistats/clarity.git</developerConnection>
+        <url>https://github.com/WCFVOL/clarity</url>
+        <connection>scm:git:git@github.com:WCFVOL/clarity.git</connection>
+        <developerConnection>scm:git:git@github.com:WCFVOL/clarity.git</developerConnection>
     </scm>
 
     <developers>
@@ -35,14 +36,13 @@
             <name>Martin Schrodt</name>
             <email>clarity@martin.schrodt.org</email>
         </developer>
+        <developer>
+            <id>WCFVOL</id>
+            <name>Wang Chunfei</name>
+            <email>1041875526@qq.com</email>
+        </developer>
     </developers>
 
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
 
     <dependencies>
         <dependency>
@@ -114,36 +114,58 @@
                     </execution>
                 </executions>
             </plugin>
+            <!--            <plugin>-->
+            <!--                <artifactId>maven-gpg-plugin</artifactId>-->
+            <!--                <version>1.6</version>-->
+            <!--                <executions>-->
+            <!--                    <execution>-->
+            <!--                        <id>sign-artifacts</id>-->
+            <!--                        <phase>verify</phase>-->
+            <!--                        <goals>-->
+            <!--                            <goal>sign</goal>-->
+            <!--                        </goals>-->
+            <!--                        <configuration>-->
+            <!--                            <keyname>2DAD9425307EC268</keyname>-->
+            <!--                            <passphraseServerId>clarity.gpg</passphraseServerId>-->
+            <!--                            <gpgArguments>-->
+            <!--                                <arg>&#45;&#45;pinentry-mode=loopback</arg>-->
+            <!--                            </gpgArguments>-->
+            <!--                        </configuration>-->
+            <!--                    </execution>-->
+            <!--                </executions>-->
+            <!--            </plugin>-->
             <plugin>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>1.6</version>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                        <configuration>
-                            <keyname>2DAD9425307EC268</keyname>
-                            <passphraseServerId>clarity.gpg</passphraseServerId>
-                            <gpgArguments>
-                                <arg>--pinentry-mode=loopback</arg>
-                            </gpgArguments>
-                        </configuration>
-                    </execution>
-                </executions>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.8.1</version>
+                <configuration>
+                    <altDeploymentRepository>internal.repo::default::file://${project.build.directory}/mvn-repo
+                    </altDeploymentRepository>
+                </configuration>
             </plugin>
             <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.6.7</version>
-                <extensions>true</extensions>
+                <groupId>com.github.github</groupId>
+                <artifactId>site-maven-plugin</artifactId>
+                <version>0.12</version>
                 <configuration>
-                    <serverId>ossrh</serverId>
-                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                    <message>Maven artifacts for ${project.version}</message>
+                    <noJekyll>true</noJekyll>
+                    <outputDirectory>${project.build.directory}/mvn-repo</outputDirectory><!--本地jar地址-->
+                    <branch>refs/heads/master</branch><!--分支-->
+                    <merge>true</merge>
+                    <includes>
+                        <include>**/*</include>
+                    </includes>
+                    <repositoryName>mvn-repo</repositoryName><!--对应github上创建的仓库名称 name-->
+                    <repositoryOwner>WCFVOL</repositoryOwner><!--github 仓库所有者-->
                 </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>site</goal>
+                        </goals>
+                        <phase>deploy</phase>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
