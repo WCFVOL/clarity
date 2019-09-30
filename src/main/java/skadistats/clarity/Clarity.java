@@ -72,7 +72,7 @@ public class Clarity {
      * @return the {@code CDOTAMatchMetadataFile} protobuf message
      * @throws IOException if the given stream is invalid
      */
-    private static S2DotaMatchMetadata.CDOTAMatchMetadataFile metadataForStream(InputStream stream) throws IOException {
+    public static S2DotaMatchMetadata.CDOTAMatchMetadataFile metadataForStream(InputStream stream) throws IOException {
         return Packet.parse(S2DotaMatchMetadata.CDOTAMatchMetadataFile.class, ByteString.readFrom(stream));
     }
 
